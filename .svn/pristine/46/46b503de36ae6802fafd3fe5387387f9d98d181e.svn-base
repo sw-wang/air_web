@@ -1,0 +1,13 @@
+module.exports = {
+    publicPath: process.env.VUE_APP_BASE_URL,
+    outputDir: process.env.VUE_APP_OUTPUT_DIR,
+    productionSourceMap: false,
+    devServer: {
+        proxy: {
+            '/audit': {
+                target: 'http://121.40.31.44:10288/',
+                changeOrigin: true
+            }
+        }
+    }
+}

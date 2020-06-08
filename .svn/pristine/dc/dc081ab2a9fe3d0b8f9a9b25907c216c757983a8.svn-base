@@ -1,0 +1,123 @@
+.login-body {
+  background     : url(~@/assets/images/login-bg.jpg);
+  height         : 100%;
+  background-size: cover;
+  position       : absolute;
+  left           : 0;
+  top            : 0;
+  width          : 100%;
+}
+
+.login-wrap {
+  width     : 1000px;
+  margin    : 0 auto;
+  height    : 420px;
+  position  : relative;
+  top       : 50%;
+  margin-top: -210px;
+}
+
+.login-wrap .wrap-left {
+  width           : 630px;
+  height          : 420px;
+  float           : left;
+  background-color: rgba(39, 49, 66, 0.5);
+}
+
+.login-wrap .wrap-left .logo {
+  font-size  : 22px;
+  color      : #fff;
+  float      : left;
+  margin     : 20px 30px;
+  line-height: 40px;
+}
+
+.login-wrap .wrap-left .logo i {
+  font-size: 32px;
+  float    : left;
+}
+
+.login-wrap .wrap-left .logo span {
+  float      : left;
+  margin-left: 10px;
+}
+
+.login-wrap .wrap-left .img {
+  text-align: center;
+  margin-top: 120px;
+}
+
+.login-wrap .wrap-left .img img {
+  width: 470px;
+}
+
+.login-wrap .wrap-right {
+  width     : 370px;
+  height    : 420px;
+  float     : left;
+  background: #fff;
+}
+
+.login-form {
+  padding: 50px;
+}
+
+.login-form .title {
+  color      : rgba(83, 143, 255, 1);
+  font-size  : 20px;
+  line-height: 40px;
+}
+
+.login-form .input {}
+
+.login-form .input li {
+  margin-top: 20px;
+  position  : relative;
+}
+
+.login-form .input input {
+  width        : 100%;
+  height       : 42px;
+  border-radius: 4px;
+  border       : 1px solid rgba(215, 227, 241, 1);
+  box-sizing   : border-box;
+  padding-left : 30px;
+  padding-right: 15px;
+  font-size    : 14px;
+}
+
+.login-form .input li i {
+  position   : absolute;
+  left       : 10px;
+  top        : 0;
+  line-height: 42px;
+  color      : #9cb2cd;
+}
+
+.login-form .password-col {
+  margin-top: 30px;
+  font-size : 14px;
+}
+
+.login-form .password-col a {
+  color: #538fff;
+  float: right;
+}
+
+.login-form .login-btn {
+  margin-top: 30px;
+}
+
+.login-form .login-btn a {
+  display      : block;
+  text-align   : center;
+  background   : #538fff;
+  color        : #fff;
+  border-radius: 4px;
+  line-height  : 42px;
+  font-size    : 16px;
+}
+
+.login-form .login-btn a:hover {
+  opacity: 0.8;
+}

@@ -1,0 +1,55 @@
+import Vue from 'vue'
+
+Vue.filter('amount', function(value, dot) {
+    if (!value) return '0.00'
+    if (!dot) dot = 2
+    return parseFloat(value).toFixed(dot)
+})
+Vue.filter('limit', function(value, dot) {
+    if (!value) return ''
+    if (!dot) dot = 10
+    if (value.length <= dot) return value
+    else return value.substring(0, dot) + '...'
+})
+Vue.filter('format', function(value, format) {
+    if (!value) return ''
+    if (typeof value !== 'number') value = value.replace(/-/g, '/')
+    const _ = new Date(value)
+    const date = {
+        'M+': _.getMonth() + 1,
+        'd+': _.getDate(),
+        'h+': _.getHours(),
+        'm+': _.getMinutes(),
+        's+': _.getSeconds(),
+        'q+': Math.floor((_.getMonth() + 3) / 3),
+        'S+': _.getMilliseconds()
+    }
+    if (/(y+)/i.test(format)) {
+        format = format.replace(
+            RegExp.$1,
+            (_.getFullYear() + '').substr(4 - RegExp.$1.length)
+        )
+    }
+    for (const k in date) {
+        if (new RegExp('(' + k + ')').test(format)) {
+            format = format.replace(
+                RegExp.$1,
+                RegExp.$1.length == 1
+                    ? date[k]
+                    : ('00' + date[k]).substr(('' + date[k]).length)
+            )
+        }
+    }
+    return format
+})
+// Vue.filter('ext', function(value, format){
+//     if(!value) return ''
+//     if('jpg|png|gif|bmp|jpeg'.indexOf(value) >= 0) return 'iamge'
+//     else if('xls|xlsx'.indexOf(value) >= 0) return 'icon-excel'
+//     else if('doc|docx'.indexOf(value) >= 0) return 'icon-word'
+//     else if('pdf'.indexOf(value) >= 0) return 'icon-pdf'
+//     else if('ppt'.indexOf(value) >= 0) return 'icon-ppt'
+//     else if('txt'.indexOf(value) >= 0) return 'icon-text'
+//     else if('zip|ara|7z|gz|bz|ace|uha|uda|ZPAQ'.indexOf(value) >= 0) return 'icon-yasuowenjian'
+//     else return 'icon-yasuowenjian'
+// })

@@ -1,0 +1,5 @@
+const api = {
+    development: '/api',
+    production: 'http://engagement.shinewing.com/api'
+}
+export default api[process.env.NODE_ENV] + '/admin/'

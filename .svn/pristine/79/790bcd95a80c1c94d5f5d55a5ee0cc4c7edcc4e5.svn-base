@@ -1,0 +1,259 @@
+<template>
+    <div class="secondary-page">
+        <div class="max-title">人员信息</div>
+        <div class="secondary-content">
+            <div class="small-tile">
+                <span class="tit">查询条件</span>
+            </div>
+            <div class="input-content">
+                <el-form ref="form" :model="form" label-width="90px">
+                    <el-row :gutter="10">
+                        <el-col :span="6">
+                            <el-form-item label="工号">
+                                <el-input v-model="f" size="small"> </el-input>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="6">
+                            <el-form-item label="姓名">
+                                <el-input v-model="f" size="small"> </el-input>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="6">
+                            <el-form-item label="性别">
+                                <el-radio v-model="radio1" label="1">男</el-radio>
+                                <el-radio v-model="radio1" label="2">女</el-radio>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="6">
+                            <el-form-item label="部门">
+                                <el-select v-model="value" placeholder="请选择" size="small" style="width: 100%">
+                                    <el-option
+                                        v-for="item in options"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value"
+                                    >
+                                    </el-option>
+                                </el-select>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="6">
+                            <el-form-item label="在职状态">
+                                <el-radio v-model="radio" label="1">在职</el-radio>
+                                <el-radio v-model="radio" label="2">离职</el-radio>
+                                <el-radio v-model="radio" label="3">退休</el-radio>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    <el-form-item style="text-align: center;  margin-right: 90px;">
+                        <el-button type="primary" @click="onSubmit" size="small" style="width: 80px">查询</el-button>
+                        <el-button size="small" style="width: 80px">重置</el-button>
+                    </el-form-item>
+                </el-form>
+            </div>
+            <div class="small-tile">
+                <span class="tit">人员列表</span>
+                <el-button
+                    type="primary"
+                    size="mini"
+                    icon="el-icon-plus"
+                    style="margin-left: 20px;"
+                    @click="dialogVisible = true"
+                    >新增</el-button
+                >
+                <el-button type="primary" size="mini" style="margin-left: 20px;">导出</el-button>
+            </div>
+
+            <el-table :data="tableData" border stripe style="width: 100%; margin-top: 10px;">
+                <el-table-column type="selection" width="50" align="center"> </el-table-column>
+                <el-table-column type="index" label="序号" width="50" align="center"> </el-table-column>
+                <el-table-column prop="gh" label="工号"> </el-table-column>
+                <el-table-column prop="xm" label="姓名"> </el-table-column>
+                <el-table-column prop="xb" label="性别"> </el-table-column>
+                <el-table-column prop="bm" label="部门"> </el-table-column>
+                <el-table-column prop="zw" label="职务"> </el-table-column>
+                <el-table-column prop="bz" label="在职状态">在职</el-table-column>
+                <el-table-column prop="sfczy" label="是否操作员"> 是</el-table-column>
+                <el-table-column prop="bz" label="备注"> 无</el-table-column>
+                <el-table-column prop="zhbjr" label="最后编辑人"> 王五</el-table-column>
+                <el-table-column prop="zhbjsj" label="最后编辑时间" width="170">2020-05-15 10:10:02 </el-table-column>
+                <el-table-column prop="caozuo" label="操作">
+                    <el-button type="text" icon="el-icon-edit-outline" size="small" @click="dialogVisible = true"
+                        >编辑</el-button
+                    >
+                </el-table-column>
+            </el-table>
+
+            <div class="block" style="padding: 10px 0;">
+                <el-pagination
+                    @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange"
+                    :current-page.sync="currentPage1"
+                    :page-size="100"
+                    layout="total, prev, pager, next"
+                    :total="1000"
+                >
+                </el-pagination>
+            </div>
+
+            <el-dialog title="新增/编辑" :visible.sync="dialogVisible" width="500" :before-close="handleClose">
+                <div class="input-content">
+                    <el-form ref="form" :model="form" label-width="90px">
+                        <el-row :gutter="10">
+                            <el-col :span="12">
+                                <el-form-item label="工号">
+                                    <el-input v-model="input1" size="small"> </el-input>
+                                </el-form-item>
+                            </el-col>
+
+                            <el-col :span="12">
+                                <el-form-item label="姓名">
+                                    <el-input v-model="input2" size="small"> </el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="性别">
+                                    <el-radio v-model="radio2" label="1">男</el-radio>
+                                    <el-radio v-model="radio2" label="2">女</el-radio>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="部门">
+                                    <el-select v-model="value" placeholder="请选择" size="small" style="width: 100%">
+                                        <el-option
+                                            v-for="item in options"
+                                            :key="item.value"
+                                            :label="item.label"
+                                            :value="item.value"
+                                        >
+                                        </el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="职务">
+                                    <el-input v-model="input2" size="small"> </el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="在职状态">
+                                    <el-radio v-model="radio3" label="1">在职</el-radio>
+                                    <el-radio v-model="radio3" label="2">离职</el-radio>
+                                    <el-radio v-model="radio3" label="2">退休</el-radio>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="是否操作员">
+                                    <el-radio v-model="radio4" label="1">是</el-radio>
+                                    <el-radio v-model="radio4" label="2">否</el-radio>
+                                </el-form-item>
+                            </el-col>
+
+                            <el-col :span="12">
+                                <el-form-item label="密码">
+                                    <el-input v-model="input2" size="small"> </el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="24">
+                                <el-form-item label="备注">
+                                    <el-input
+                                        v-model="input2"
+                                        type="textarea"
+                                        :autosize="{ minRows: 5, maxRows: 10 }"
+                                        placeholder="请输入备注"
+                                        size="small"
+                                    >
+                                    </el-input>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                    </el-form>
+                </div>
+
+                <span slot="footer" class="dialog-footer">
+                    <el-button @click="dialogVisible = false">取 消</el-button>
+                    <el-button type="primary" @click="dialogVisible = false">提 交</el-button>
+                </span>
+            </el-dialog>
+        </div>
+    </div>
+</template>
+
+<script>
+export default {
+    data() {
+        return {
+            radio: '1',
+            radio1: '1',
+            radio2: '1',
+            radio3: '1',
+            radio4: '1',
+            dialogVisible: false,
+            activeName: 'first',
+            bianhao: '4992011',
+            daima: '02001900311',
+            haoma: '30613344',
+            riqi: '2020年04月24日',
+            mingcheng: '增税普票',
+            jine: '31.43',
+            form: {
+                name: '',
+                region: '',
+                date1: '',
+                date2: '',
+                delivery: false,
+                type: [],
+                resource: '',
+                desc: ''
+            },
+            tableData: [
+                {
+                    xuhao: '1',
+                    gh: '010101',
+                    xm: '韩梅梅',
+                    xb: '女',
+                    bm: '总经理办公室',
+                    zw: '行政秘书'
+                },
+                {
+                    xuhao: '2',
+                    gh: '010101',
+                    xm: '李现',
+                    xb: '男',
+                    bm: '销售部',
+                    zw: '部门经理'
+                },
+                {
+                    xuhao: '3',
+                    gh: '010101',
+                    xm: '张琳',
+                    xb: '女',
+                    bm: '财务部',
+                    zw: '员工'
+                },
+                {
+                    xuhao: '4',
+                    gh: '010101',
+                    xm: '李海',
+                    xb: '男',
+                    bm: '研发部',
+                    zw: '员工'
+                }
+            ],
+            tableData2: [
+                {
+                    xuhao: '1'
+                },
+                {
+                    xuhao: '2'
+                }
+            ]
+        }
+    },
+    methods: {
+        onSubmit() {
+            console.log('submit!')
+        }
+    }
+}
+</script>

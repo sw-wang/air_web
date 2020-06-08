@@ -1,0 +1,262 @@
+<template>
+    <div class="secondary-page">
+        <div class="max-title">票据中心</div>
+        <div class="secondary-content">
+            <div class="small-tile">
+                <span class="tit">票据查询</span>
+            </div>
+            <div class="input-content">
+                <el-form ref="form" :model="form" label-width="90px">
+                    <el-row :gutter="10">
+                        <el-col :span="6">
+                            <el-form-item label="机器编号">
+                                <el-input v-model="f" size="small"> </el-input>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="6">
+                            <el-form-item label="发票代码">
+                                <el-input v-model="f" size="small"> </el-input>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="6">
+                            <el-form-item label="发票号码">
+                                <el-input v-model="f" size="small"> </el-input>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="6">
+                            <el-form-item label="开票日期">
+                                <el-input v-model="f" size="small"> </el-input>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="6">
+                            <el-form-item label="发票名称">
+                                <el-input v-model="f" size="small"> </el-input>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="6">
+                            <el-form-item label="发票金额">
+                                <el-input v-model="f" size="small"> </el-input>
+                            </el-form-item>
+                        </el-col>
+
+                        <el-col :span="6">
+                            <el-form-item label="对应报销单">
+                                <el-select v-model="value" placeholder="请选择" size="small" style="width: 100%">
+                                    <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"> </el-option>
+                                </el-select>
+                            </el-form-item>
+                        </el-col>
+
+                        <el-col :span="6">
+                            <el-form-item label="模糊查询">
+                                <el-input v-model="f" size="small"> </el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    <el-form-item style="text-align: center; margin-right: 90px;">
+                        <el-button type="primary" @click="onSubmit" size="small" style="width: 80px">查询</el-button>
+                        <el-button size="small" style="width: 80px">重置</el-button>
+                    </el-form-item>
+                </el-form>
+            </div>
+            <div class="small-tile">
+                <span class="tit">票据列表</span>
+                <el-button type="primary" size="mini" style="margin-left: 20px;">识别验证</el-button>
+                <el-button type="primary" size="mini">巡检</el-button>
+                <el-button type="primary" size="mini">生成凭证</el-button>
+                <el-button type="primary" size="mini">归档</el-button>
+                <el-button type="primary" size="mini">导出</el-button>
+            </div>
+
+            <el-table :data="tableData" border stripe style="width: 100%; margin-top: 10px;">
+                <el-table-column type="selection" width="50" align="center"> </el-table-column>
+                <el-table-column type="index" label="序号" width="50" align="center"> </el-table-column>
+                <el-table-column prop="bianhao" label="机器编号">11112 </el-table-column>
+                <el-table-column prop="daima" label="发票代码">92030459 </el-table-column>
+                <el-table-column prop="haoma" label="发票号码"> 032001600711</el-table-column>
+                <el-table-column prop="date" label="开票日期"> </el-table-column>
+                <el-table-column prop="mingcheng" label="发票名称"> 增税普票</el-table-column>
+                <el-table-column prop="jine" label="发票金额"> </el-table-column>
+                <el-table-column prop="duiying" label="对应报销单"><a href="#">123131313</a> </el-table-column>
+                <el-table-column prop="guishu" label="发票归属">张三 </el-table-column>
+                <el-table-column prop="yangzhong" label="验重状态"> </el-table-column>
+                <el-table-column prop="yanwei" label="验伪状态"> </el-table-column>
+                <el-table-column prop="xunjian" label="巡检状态"> </el-table-column>
+                <el-table-column prop="pingzheng" label="凭证状态"> </el-table-column>
+                <el-table-column prop="guidang" label="归档状态"> </el-table-column>
+                <el-table-column prop="wenjian" label="票据文件">20201022.pdf </el-table-column>
+                <el-table-column prop="caozuo" label="操作">
+                    <el-button type="text" size="small" icon="el-icon-search" @click="dialogVisible = true">查看</el-button>
+                </el-table-column>
+            </el-table>
+
+            <div class="block" style="padding: 10px 0;">
+                <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage1" :page-size="100" layout="total, prev, pager, next" :total="1000"> </el-pagination>
+            </div>
+
+            <el-dialog title="详情" :visible.sync="dialogVisible" width="90" :before-close="handleClose">
+                <div class="small-tile">
+                    <span class="tit">关联凭证</span>
+                </div>
+                <div class="table-wrap">
+                    <el-table :data="tableData2" border stripe style="width: 100%;">
+                        <el-table-column prop="xuhao" label="序号" width="50">1</el-table-column>
+                        <el-table-column label="凭证摘要">
+                            XXXX
+                        </el-table-column>
+                        <el-table-column prop="date" label="分录方向">
+                            --
+                        </el-table-column>
+                        <el-table-column prop="jine" label="分录金额">
+                            31.42
+                        </el-table-column>
+                        <el-table-column prop="jine" label="对应个人">
+                            张三
+                        </el-table-column>
+                        <el-table-column prop="jine" label="对应部门">
+                            销售部
+                        </el-table-column>
+
+                        <el-table-column prop="jine" label="对应项目">
+                            XX项目
+                        </el-table-column>
+
+                        <el-table-column prop="jine" label="对应供应商">
+                            XXX供应商
+                        </el-table-column>
+                    </el-table>
+                </div>
+
+                <div class="small-tile">
+                    <span class="tit">识别信息</span>
+                </div>
+                <div class="input-content">
+                    <el-form ref="form" :model="form" label-width="90px">
+                        <el-row :gutter="10">
+                            <el-col :span="12">
+                                <el-form-item label="机器编号">
+                                    <el-input v-model="bianhao" size="small"> </el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="发票代码">
+                                    <el-input v-model="daima" size="small"> </el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="发票号码">
+                                    <el-input v-model="haoma" size="small"> </el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="开票日期">
+                                    <el-input v-model="riqi" size="small"> </el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="发票名称">
+                                    <el-input v-model="mingcheng" size="small"> </el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="发票金额">
+                                    <el-input v-model="jine" size="small"> </el-input>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                    </el-form>
+                </div>
+                <div class="small-tile">
+                    <span class="tit">影像文件</span>
+                </div>
+                <div style="padding:15px 0;" class="dialogFile">
+                    <a href="#"><i class="el-icon-document"></i> XXXXX.pdf</a>
+                </div>
+
+                <span slot="footer" class="dialog-footer">
+                    <el-button @click="dialogVisible = false">取 消</el-button>
+                    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+                </span>
+            </el-dialog>
+        </div>
+    </div>
+</template>
+
+<script>
+export default {
+    data() {
+        return {
+            dialogVisible: false,
+            activeName: 'first',
+            bianhao: '4992011',
+            daima: '02001900311',
+            haoma: '30613344',
+            riqi: '2020年04月24日',
+            mingcheng: '增税普票',
+            jine: '31.43',
+            form: {
+                name: '',
+                region: '',
+                date1: '',
+                date2: '',
+                delivery: false,
+                type: [],
+                resource: '',
+                desc: ''
+            },
+            tableData: [
+                {
+                    xuhao: '1',
+                    danhao: '010101',
+                    zhuti: '广州出差报销',
+                    jine: '10,000.00',
+                    shuie: '100.00',
+                    date: '2016-05-02',
+                    name: '王小虎',
+                    bumen: '销售部',
+                    xunjian: ' '
+                },
+                {
+                    xuhao: '2',
+                    danhao: '010101',
+                    zhuti: '广州出差报销',
+                    jine: '10,000.00',
+                    shuie: '100.00',
+                    date: '2016-05-02',
+                    name: '王小虎',
+                    bumen: '销售部',
+                    xunjian: ' '
+                },
+                {
+                    xuhao: '3',
+                    danhao: '010101',
+                    zhuti: '广州出差报销',
+                    jine: '10,000.00',
+                    shuie: '100.00',
+                    date: '2016-05-02',
+                    name: '王小虎',
+                    bumen: '销售部',
+                    xunjian: ' '
+                },
+                {
+                    xuhao: '4',
+                    danhao: '010101',
+                    zhuti: '广州出差报销',
+                    jine: '10,000.00',
+                    shuie: '100.00',
+                    date: '2016-05-02',
+                    name: '王小虎',
+                    bumen: '销售部',
+                    xunjian: ' '
+                }
+            ],
+            tableData2: [{}]
+        }
+    },
+    methods: {
+        onSubmit() {
+            console.log('submit!')
+        }
+    }
+}
+</script>

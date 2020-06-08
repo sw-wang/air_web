@@ -1,0 +1,173 @@
+<template>
+    <div class="secondary-page">
+        <div class="max-title">我的报销单</div>
+        <div class="secondary-content">
+            <el-button type="primary" icon="el-icon-plus" size="small" class="new-btn" @click="newReimbursement"
+                >新增</el-button
+            >
+
+            <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
+                <el-tab-pane label="待付款" name="first">
+                    <el-table :data="tableData" border stripe style="width: 100%;">
+                        <el-table-column type="index" label="序号" width="50" align="center"> </el-table-column>
+                        <el-table-column prop="danhao" label="报销单号"> </el-table-column>
+                        <el-table-column prop="zhuti" label="报销主题"> </el-table-column>
+                        <el-table-column prop="date" label="申请日期"> </el-table-column>
+                        <el-table-column prop="jine" label="报销金额"> </el-table-column>
+                        <el-table-column prop="shuie" label="可抵扣税额"> </el-table-column>
+                        <el-table-column prop="name" label="申请人"> </el-table-column>
+                        <el-table-column prop="bumen" label="申请部门"> </el-table-column>
+                        <el-table-column prop="xunjian" label="巡检状态"> </el-table-column>
+                        <el-table-column prop="caozuo" label="操作">
+                            <el-button type="text" size="small" icon="el-icon-search">查看</el-button>
+                            <el-button type="text" size="small" icon="el-icon-delete" style="color:#f56c6c"
+                                >删除</el-button
+                            >
+                        </el-table-column>
+                    </el-table>
+                    <div class="block" style="padding: 10px 0;">
+                        <el-pagination
+                            @size-change="handleSizeChange"
+                            @current-change="handleCurrentChange"
+                            :current-page.sync="currentPage1"
+                            :page-size="100"
+                            layout="total, prev, pager, next"
+                            :total="1000"
+                        >
+                        </el-pagination>
+                    </div>
+                </el-tab-pane>
+                <el-tab-pane label="已付款" name="second">
+                    <el-table :data="tableData" border stripe style="width: 100%;">
+                        <el-table-column type="index" width="50" label="序号" align="center"></el-table-column>
+                        <el-table-column prop="danhao" label="报销单号"> </el-table-column>
+                        <el-table-column prop="zhuti" label="报销主题"> </el-table-column>
+                        <el-table-column prop="date" label="申请日期"> </el-table-column>
+                        <el-table-column prop="jine" label="报销金额"> </el-table-column>
+                        <el-table-column prop="shuie" label="可抵扣税额"> </el-table-column>
+                        <el-table-column prop="name" label="申请人"> </el-table-column>
+                        <el-table-column prop="bumen" label="申请部门"> </el-table-column>
+                        <el-table-column prop="xunjian" label="巡检状态"> </el-table-column>
+                        <el-table-column prop="caozuo" label="操作">
+                            <el-button type="text" size="small" icon="el-icon-search">查看</el-button>
+                            <el-button type="text" size="small" icon="el-icon-delete" style="color:#f56c6c"
+                                >删除</el-button
+                            >
+                        </el-table-column>
+                    </el-table>
+                    <div class="block" style="padding: 10px 0;">
+                        <el-pagination
+                            @size-change="handleSizeChange"
+                            @current-change="handleCurrentChange"
+                            :current-page.sync="currentPage1"
+                            :page-size="100"
+                            layout="total, prev, pager, next"
+                            :total="1000"
+                        >
+                        </el-pagination>
+                    </div>
+                </el-tab-pane>
+                <el-tab-pane label="异常报销单" name="third">
+                    <el-table :data="tableData" border stripe style="width: 100%;">
+                        <el-table-column type="index" label="序号" width="50" align="center"> </el-table-column>
+                        <el-table-column prop="danhao" label="报销单号"> </el-table-column>
+                        <el-table-column prop="zhuti" label="报销主题"> </el-table-column>
+                        <el-table-column prop="date" label="申请日期"> </el-table-column>
+                        <el-table-column prop="jine" label="报销金额"> </el-table-column>
+                        <el-table-column prop="shuie" label="可抵扣税额"> </el-table-column>
+                        <el-table-column prop="name" label="申请人"> </el-table-column>
+                        <el-table-column prop="bumen" label="申请部门"> </el-table-column>
+                        <el-table-column prop="xunjian" label="巡检状态"> </el-table-column>
+                        <el-table-column prop="caozuo" label="操作">
+                            <el-button type="text" size="small" icon="el-icon-search">查看</el-button>
+                            <el-button type="text" size="small" icon="el-icon-delete" style="color:#f56c6c"
+                                >删除</el-button
+                            >
+                        </el-table-column>
+                    </el-table>
+                    <div class="block" style="padding: 10px 0;">
+                        <el-pagination
+                            @size-change="handleSizeChange"
+                            @current-change="handleCurrentChange"
+                            :current-page.sync="currentPage1"
+                            :page-size="100"
+                            layout="total, prev, pager, next"
+                            :total="1000"
+                        >
+                        </el-pagination>
+                    </div>
+                </el-tab-pane>
+            </el-tabs>
+        </div>
+    </div>
+</template>
+
+<script>
+export default {
+    data() {
+        return {
+            activeName: 'first',
+            form: {
+                name: '',
+                region: '',
+                date1: '',
+                date2: '',
+                delivery: false,
+                type: [],
+                resource: '',
+                desc: ''
+            },
+            tableData: [
+                {
+                    danhao: '010101',
+                    zhuti: '广州出差报销',
+                    jine: '10,000.00',
+                    shuie: '100.00',
+                    date: '2016-05-02',
+                    name: '王小虎',
+                    bumen: '销售部',
+                    xunjian: '存在作废发票'
+                },
+                {
+                    danhao: '010101',
+                    zhuti: '广州出差报销',
+                    jine: '10,000.00',
+                    shuie: '100.00',
+                    date: '2016-05-02',
+                    name: '王小虎',
+                    bumen: '销售部',
+                    xunjian: '存在作废发票'
+                },
+                {
+                    danhao: '010101',
+                    zhuti: '广州出差报销',
+                    jine: '10,000.00',
+                    shuie: '100.00',
+                    date: '2016-05-02',
+                    name: '王小虎',
+                    bumen: '销售部',
+                    xunjian: '存在作废发票'
+                },
+                {
+                    danhao: '010101',
+                    zhuti: '广州出差报销',
+                    jine: '10,000.00',
+                    shuie: '100.00',
+                    date: '2016-05-02',
+                    name: '王小虎',
+                    bumen: '销售部',
+                    xunjian: '存在作废发票'
+                }
+            ]
+        }
+    },
+    methods: {
+        onSubmit() {
+            console.log('submit!')
+        },
+        newReimbursement() {
+            this.$router.push('/newReimbursement')
+        }
+    }
+}
+</script>

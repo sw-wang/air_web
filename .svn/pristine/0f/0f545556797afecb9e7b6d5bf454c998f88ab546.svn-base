@@ -1,0 +1,116 @@
+<template>
+    <div class="km-container">
+        <div id="CameraCtrl" style="width:760px; height: 400px;">
+            <div class="notips" v-if="notips">{{ notips }}</div>
+        </div>
+        <div class="wrap">
+            <el-row style="display: none;">
+                <el-button size="mini"><i class="el-icon-aim"></i> 对焦</el-button>
+                <el-button size="mini"><i class="el-icon-refresh"></i> 适配</el-button>
+                <el-button size="mini"><i class="el-icon-c-scale-to-original"></i> 1:1</el-button>
+                <el-button size="mini"><i class="el-icon-refresh-left"></i> 右旋</el-button>
+                <el-button size="mini"><i class="el-icon-refresh-right"></i> 左旋</el-button>
+                <el-button size="mini"><i class="el-icon-zoom-in"></i> 放大</el-button>
+                <el-button size="mini"><i class="el-icon-zoom-out"></i> 缩小</el-button>
+            </el-row>
+            <el-row style="display: none;">
+                <el-col :span="6">
+                    图像质量:
+                    <select id="JpgQuality" onchange="toSetJpgQuality()">
+                        <option value="0">10</option>
+                        <option value="1">20</option>
+                        <option value="2">30</option>
+                        <option value="3">40</option>
+                        <option value="4">50</option>
+                        <option value="5" selected="true">60</option>
+                        <option value="6">70</option>
+                        <option value="7">80</option>
+                        <option value="8">90</option>
+                        <option value="9">100</option>
+                    </select></el-col
+                >
+                <el-col :span="6">
+                    分辨率:
+                    <select style="width: 140px;" id="DevResolution" onchange="SelectResolution()"></select>
+                </el-col>
+            </el-row>
+            <img style="width: 100px;display: none;" id="showImg" />
+            <el-row style="text-align: center; padding-top: 20px;">
+                <el-button circle type="danger" @click="taskPhone"><i class="el-icon-camera-solid"></i></el-button>
+            </el-row>
+        </div>
+    </div>
+</template>
+<script>
+import { base64toFile } from '@/utils/utils'
+import { itemInvoice, multipleInvoice } from '@/services/orc'
+export default {
+    data() {
+        return {
+            notips: ''
+        }
+    },
+    mounted() {
+        if (!window.WebSocket) {
+            this.notips = '浏览器不支持HTML5，请更新浏览器或者使用其它浏览器！'
+            return false
+        }
+        const obj = document.getElementById('CameraCtrl')
+        /* eslint-disable */
+        Cam_ControlInit(obj, 0, 0, 760, 400)
+    },
+    methods: {
+        taskPhone() {
+            /* eslint-disable */
+            const loading = this.$loading()
+            Cam_Photo()
+            const timeout = setTimeout(() => {
+                loading.close()
+                clearInterval(timer)
+                clearTimeout(timeout)
+                this.$notify({ type: 'error', title: '提示', message: '获取图像识别，请重试' })
+            }, 10000)
+            const timer = setInterval(() => {
+                if (localStorage.kemiStr) {
+                    const base64Str = localStorage.kemiStr
+                    localStorage.kemiStr = ''
+                    clearInterval(timer)
+                    clearTimeout(timeout)
+                    //
+                    let formData = new FormData()
+                    formData.append(`file`, base64toFile(base64Str))
+                    let config = {
+                        headers: { 'Content-Type': 'multipart/form-data' }
+                    }
+                    multipleInvoice(formData, config).then(data => {
+                        loading.close()
+                        this.$emit('change', data)
+                    })
+                }
+            }, 100)
+        }
+    }
+}
+</script>
+<style scoped lang="scss">
+.km-container {
+    .notips {
+        text-align: center;
+        padding-top: 20%;
+        font-size: 18px;
+        color: rgba(255, 0, 0, 0.6);
+    }
+    #CameraCtrl {
+        background-color: #999;
+    }
+    .wrap {
+        padding: 20px 0;
+        .el-row {
+            margin: 20px 0;
+        }
+    }
+    .el-icon-camera-solid {
+        font-size: 50px;
+    }
+}
+</style>

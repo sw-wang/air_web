@@ -1,0 +1,85 @@
+import axios from 'axios'
+import qs from 'qs'
+import cookie from 'vue-cookie'
+import { Notification, Loading } from 'element-ui'
+let loading = null
+
+axios.defaults.baseURL = process.env.VUE_APP_API_DOMAIN
+axios.defaults.timeout = parseInt(process.env.VUE_APP_DEFAULT_TIEMOUT)
+axios.defaults.headers.post['Content-Type'] = 'application/json'
+
+axios.interceptors.request.use(
+    config => {
+        // IE 缓存bug fix
+        console.log(config.url)
+        config.url += (config.url.indexOf('?') === -1 ? `?t=${+new Date()}` : `&t=${+new Date()}`)
+        // 针对上传请求，单独设置超时时间
+        if (config.data instanceof FormData && config.data.get && config.data.get('file') instanceof File) {
+            config.timeout = parseInt(process.env.VUE_APP_UPLOAD_TIEMOUT)
+        }
+        config.withCredentials = true // 允许携带cookie
+        let tokenInfo = JSON.parse(cookie.get('TOKENINFO') || '{}')
+        if (tokenInfo.accessToken) {
+            config.headers.xToken = tokenInfo.accessToken
+        }
+
+        loading = Loading.service()
+        return config
+    },
+    error => {
+        return Promise.reject(error)
+    }
+)
+
+axios.interceptors.response.use(
+    response => {
+        loading.close()
+        const responseData = response.data || {}
+        const code = responseData.code
+        const message = responseData.reason || responseData.message || responseData.msg || '系统错误，请重试！'
+        let data = null
+        //  301 身份验证失败
+        //  302 身份验证过期
+        //  303 权限不足
+        if ([301, 302].indexOf(code) > -1) {
+            setTimeout(() => {
+                const url = window.location.href.replace(window.location.hash, '')
+                window.location.replace(`${url}#/login`)
+            }, 2000)
+            /* eslint-disable */
+            return Promise.reject({ code: 1, message: message || '登录信息过期，请重新登录' })
+        }
+        // 下载文件
+        if (code === undefined && responseData instanceof Blob) {
+            return responseData
+        }
+        // 只要 code !== 200 都当错误处理
+        if (code == 200) {
+            data = responseData.data || {}
+            if (typeof responseData.data === 'object') {
+                data.__code = code
+                data.__message = message
+            }
+            return data
+        }
+        /* eslint-disable */
+        Notification({ type: 'error', title: '提示', message })
+        return Promise.reject({ code: code, message: message })
+    },
+    error => {
+        let message = error.message || ''
+        if (message.indexOf('timeout of') === 0) {
+            message = '接口请求超时，请重试'
+        }
+        /* eslint-disable */
+        return Promise.reject({ code: error.code, message: message })
+    }
+)
+
+export const get = (url, data, config) => {
+    return axios.get(data ? `${url}?${qs.stringify(data)}` : url, config)
+}
+
+export const post = (url, data, config) => {
+    return axios.post(data ? `${url}?${qs.stringify(data)}` : url, config)
+}

@@ -1,0 +1,89 @@
+<template>
+    <div class="km-container">
+        <div id="CameraCtrl" style="width:760px; height: 400px;">
+            <div class="notips" v-if="notips">{{ notips }}</div>
+        </div>
+        <div class="wrap">
+            <el-row>
+                <el-button size="mini"><i class="el-icon-aim"></i> 对焦</el-button>
+                <el-button size="mini"><i class="el-icon-refresh"></i> 适配</el-button>
+                <el-button size="mini"><i class="el-icon-c-scale-to-original"></i> 1:1</el-button>
+                <el-button size="mini"><i class="el-icon-refresh-left"></i> 右旋</el-button>
+                <el-button size="mini"><i class="el-icon-refresh-right"></i> 左旋</el-button>
+                <el-button size="mini"><i class="el-icon-zoom-in"></i> 放大</el-button>
+                <el-button size="mini"><i class="el-icon-zoom-out"></i> 缩小</el-button>
+            </el-row>
+            <el-row>
+                <el-col :span="6">
+                    图像质量:
+                    <select id="JpgQuality" onchange="toSetJpgQuality()">
+                        <option value="0">10</option>
+                        <option value="1">20</option>
+                        <option value="2">30</option>
+                        <option value="3">40</option>
+                        <option value="4">50</option>
+                        <option value="5" selected="true">60</option>
+                        <option value="6">70</option>
+                        <option value="7">80</option>
+                        <option value="8">90</option>
+                        <option value="9">100</option>
+                    </select></el-col
+                >
+                <el-col :span="6">
+                    分辨率:
+                    <select style="width: 140px;" id="DevResolution" onchange="SelectResolution()"></select>
+                </el-col>
+            </el-row>
+            <img style="width: 100px;" id="showImg" />
+            <el-row style="text-align: center; padding-top: 20px;">
+                <el-button circle type="danger" @click="taskPhone"><i class="el-icon-camera-solid"></i></el-button>
+            </el-row>
+        </div>
+    </div>
+</template>
+<script>
+export default {
+    data() {
+        return {
+            notips: ''
+        }
+    },
+    mounted() {
+        if (!window.WebSocket) {
+            this.notips = '浏览器不支持HTML5，请更新浏览器或者使用其它浏览器！'
+            return false
+        }
+        const obj = document.getElementById('CameraCtrl')
+        /* eslint-disable */
+        Cam_ControlInit(obj, 0, 0, 760, 400)
+    },
+    methods: {
+        taskPhone() {
+            /* eslint-disable */
+            Cam_Photo()
+        }
+    }
+}
+</script>
+<style scoped lang="scss">
+.km-container {
+    .notips {
+        text-align: center;
+        padding-top: 20%;
+        font-size: 18px;
+        color: rgba(255, 0, 0, 0.6);
+    }
+    #CameraCtrl {
+        background-color: #999;
+    }
+    .wrap {
+        padding: 20px 0;
+        .el-row {
+            margin: 20px 0;
+        }
+    }
+    .el-icon-camera-solid {
+        font-size: 50px;
+    }
+}
+</style>

@@ -1,0 +1,245 @@
+<template>
+    <div class="secondary-page">
+        <div class="secondary-content">
+            <div class="content-title">费用报销申请</div>
+            <div class="small-tile">
+                <span class="tit">基本信息</span>
+            </div>
+            <div class="input-content">
+                <el-form ref="form" :model="form" label-width="90px">
+                    <el-row :gutter="10">
+                        <el-col :span="12">
+                            <el-form-item label="报销主题">
+                                <el-input v-model="input1" size="small"> </el-input>
+                            </el-form-item>
+                        </el-col>
+
+                        <el-col :span="6">
+                            <el-form-item label="报销金额">
+                                <el-input v-model="input2" size="small"> </el-input>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="6">
+                            <el-form-item label="可抵扣税额">
+                                <el-input v-model="input3" size="small"> </el-input>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="6">
+                            <el-form-item label="申请人">
+                                <el-select v-model="value" placeholder="请选择" size="small" style="width: 100%">
+                                    <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"> </el-option>
+                                </el-select>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="6">
+                            <el-form-item label="申请部门">
+                                <el-select v-model="value" placeholder="请选择" size="small" style="width: 100%">
+                                    <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"> </el-option>
+                                </el-select>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="6">
+                            <el-form-item label="开户行">
+                                <el-input v-model="input4" size="small"> </el-input>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="6">
+                            <el-form-item label="申请日期">
+                                <el-date-picker v-model="value1" type="date" size="small" style="width: 100%" placeholder="选择日期"> </el-date-picker>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="6">
+                            <el-form-item label="供应商名称">
+                                <el-select v-model="value" placeholder="请选择" size="small" style="width: 100%">
+                                    <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"> </el-option>
+                                </el-select>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="6">
+                            <el-form-item label="是否项目">
+                                <el-radio v-model="radio" label="1">是</el-radio>
+                                <el-radio v-model="radio" label="2">否</el-radio>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                </el-form>
+            </div>
+
+            <div class="small-tile">
+                <span class="tit">项目分配</span>
+            </div>
+            <div class="table-wrap">
+                <el-table :data="tableData" border stripe style="width: 100%;">
+                    <el-table-column type="index" label="序号" width="50" align="center">1</el-table-column>
+                    <el-table-column label="项目">
+                        <el-select v-model="value" filterable size="small" placeholder="请选择" style="width: 100%; ">
+                            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"> </el-option>
+                        </el-select>
+                    </el-table-column>
+                    <el-table-column prop="date" label="分配比例">
+                        <el-input v-model="input4" size="small"> </el-input>
+                    </el-table-column>
+                    <el-table-column prop="jine" label="分配金额">
+                        <el-input v-model="input4" size="small"> </el-input>
+                    </el-table-column>
+                    <el-table-column label="操作" width="200">
+                        <el-button type="primary" size="mini" circle icon="el-icon-plus"> </el-button>
+                        <el-button type="danger" size="mini" circle icon="el-icon-close"> </el-button>
+                    </el-table-column>
+                </el-table>
+            </div>
+            <div class="small-tile">
+                <span class="tit">报销票据</span>
+
+                <el-button type="primary" @click="Camer" size="mini" style="margin-left: 20px;">识别</el-button>
+                <el-button type="primary" size="mini">批量识别</el-button>
+                <el-button type="primary" size="mini">直接影像</el-button>
+            </div>
+            <div class="table-wrap">
+                <el-table :data="tableData" border stripe style="width: 100%;">
+                    <el-table-column type="index" label="序号" width="50" align="center">1</el-table-column>
+                    <el-table-column label="报销说明">
+                        <el-input v-model="input4" size="small"> </el-input>
+                    </el-table-column>
+                    <el-table-column prop="date" label="报销金额">
+                        <el-input v-model="input4" size="small"> </el-input>
+                    </el-table-column>
+                    <el-table-column prop="jine" label="可抵扣税额">
+                        <el-input v-model="input4" size="small"> </el-input>
+                    </el-table-column>
+                    <el-table-column prop="jine" label="票据类型">
+                        <el-select v-model="value" filterable size="small" placeholder="请选择" style="width: 100%; ">
+                            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"> </el-option>
+                        </el-select>
+                    </el-table-column>
+                    <el-table-column prop="jine" label="上传文件">
+                        <el-select v-model="value" filterable size="small" placeholder="请选择" style="width: 100%; ">
+                            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"> </el-option>
+                        </el-select>
+                    </el-table-column>
+
+                    <el-table-column prop="jine" label="文件类型">
+                        <el-select v-model="value" filterable size="small" placeholder="请选择" style="width: 100%; ">
+                            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"> </el-option>
+                        </el-select>
+                    </el-table-column>
+
+                    <el-table-column prop="jine" label="识别状态">
+                        <el-input v-model="input4" size="small"> </el-input>
+                    </el-table-column>
+                    <el-table-column prop="jine" label="票据结果">
+                        <el-input v-model="input4" size="small"> </el-input>
+                    </el-table-column>
+
+                    <el-table-column label="操作" width="200">
+                        <el-button type="primary" size="mini" circle icon="el-icon-plus"> </el-button>
+                        <el-button type="danger" size="mini" circle icon="el-icon-close"> </el-button>
+                    </el-table-column>
+                </el-table>
+            </div>
+            <div class="small-tile">
+                <span class="tit">凭证明细</span>
+            </div>
+            <div class="table-wrap">
+                <el-table :data="tableData" border stripe style="width: 100%;">
+                    <el-table-column type="index" label="序号" width="50" align="center">1</el-table-column>
+                    <el-table-column label="凭证摘要">
+                        <el-input v-model="input4" size="small"> </el-input>
+                    </el-table-column>
+                    <el-table-column prop="date" label="分录方向">
+                        <el-input v-model="input4" size="small"> </el-input>
+                    </el-table-column>
+                    <el-table-column prop="jine" label="分录金额">
+                        <el-input v-model="input4" size="small"> </el-input>
+                    </el-table-column>
+                    <el-table-column prop="jine" label="对应个人">
+                        <el-select v-model="value" filterable size="small" placeholder="请选择" style="width: 100%; ">
+                            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"> </el-option>
+                        </el-select>
+                    </el-table-column>
+                    <el-table-column prop="jine" label="对应部门">
+                        <el-select v-model="value" filterable size="small" placeholder="请选择" style="width: 100%; ">
+                            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"> </el-option>
+                        </el-select>
+                    </el-table-column>
+
+                    <el-table-column prop="jine" label="对应项目">
+                        <el-select v-model="value" filterable size="small" placeholder="请选择" style="width: 100%; ">
+                            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"> </el-option>
+                        </el-select>
+                    </el-table-column>
+
+                    <el-table-column prop="jine" label="对应供应商">
+                        <el-select v-model="value" filterable size="small" placeholder="请选择" style="width: 100%; ">
+                            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"> </el-option>
+                        </el-select>
+                    </el-table-column>
+
+                    <el-table-column label="操作" width="200">
+                        <el-button type="primary" size="mini" circle icon="el-icon-plus"> </el-button>
+                        <el-button type="danger" size="mini" circle icon="el-icon-close"> </el-button>
+                    </el-table-column>
+                </el-table>
+            </div>
+            <div class="input-content-btn">
+                <el-button type="primary" @click="onSubmit">提交</el-button>
+                <el-button>放弃</el-button>
+            </div>
+        </div>
+        <!-- 弹框 -->
+        <el-dialog title="高拍仪" :visible.sync="dialogKm" width="800px" :close-on-click-modal="false" :close-on-press-escape="false" :destroy-on-close="true">
+            <kemi />
+        </el-dialog>
+    </div>
+</template>
+
+<script>
+import Kemi from '@/components/Kemi/Kemi.vue'
+export default {
+    data() {
+        return {
+            dialogKm: false,
+            options: [
+                {
+                    value: '选项1',
+                    label: 'NXY-2020'
+                },
+                {
+                    value: '选项2',
+                    label: 'NXY-2019'
+                },
+                {
+                    value: '选项3',
+                    label: 'joinufun-2020'
+                }
+            ],
+            input1: '',
+            input2: '',
+            input3: '',
+            radio: '1',
+            form: {
+                name: '',
+                region: '',
+                date1: '',
+                date2: '',
+                delivery: false,
+                type: [],
+                resource: '',
+                desc: ''
+            },
+            tableData: [{}]
+        }
+    },
+    methods: {
+        onSubmit() {
+            console.log('submit!')
+        },
+        Camer() {
+            this.dialogKm = true
+        }
+    },
+    components: {
+        Kemi
+    }
+}
+</script>

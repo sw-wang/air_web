@@ -1,0 +1,56 @@
+<template>
+    <div class="login-body">
+        <div class="login-wrap">
+            <div class="wrap-left">
+                <div class="logo"><i class="iconfont iconxingyuan"></i><span>票据报销中心</span></div>
+                <div class="img">
+                    <img :src="require('@/assets/images/login-img.png')" />
+                </div>
+            </div>
+            <div class="wrap-right">
+                <div class="login-form">
+                    <div class="title">登录账号</div>
+                    <ul class="input">
+                        <li><i class="iconfont iconzhanghu"></i><input type="text" v-model="form.username" placeholder="用户名" /></li>
+                        <li><i class="iconfont iconmima"></i><input type="password" v-model="form.password" placeholder="密码" /></li>
+                    </ul>
+                    <div class="password-col">
+                        <label class="remember">
+                            <input type="checkbox" name="" />
+                            <span>记住密码</span>
+                        </label>
+                        <!-- <a href="#" class="forget">忘记密码？</a> -->
+                    </div>
+                    <div class="login-btn">
+                        <a @click="login">登 录</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+import cookie from 'vue-cookie'
+import './login.scss'
+import { Login } from '@/services/account'
+export default {
+    data() {
+        return {
+            form: {
+                username: '',
+                password: ''
+            }
+        }
+    },
+    created() {},
+    methods: {
+        login() {
+            Login(this.form).then(data => {
+                cookie.set('TOKENINFO', JSON.stringify(data.token))
+                this.$router.push('/dashboard')
+            })
+        }
+    }
+}
+</script>

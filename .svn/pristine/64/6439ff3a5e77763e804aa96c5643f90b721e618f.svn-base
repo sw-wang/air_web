@@ -1,0 +1,241 @@
+<template>
+    <div class="secondary-page">
+        <div class="max-title">项目信息</div>
+        <div class="secondary-content">
+            <div class="small-tile">
+                <span class="tit">查询条件</span>
+            </div>
+            <div class="input-content">
+                <el-form ref="form" :model="form" label-width="90px">
+                    <el-row :gutter="10">
+                        <el-col :span="6">
+                            <el-form-item label="项目编号">
+                                <el-input v-model="xmbh" size="small"> </el-input>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="6">
+                            <el-form-item label="项目名称">
+                                <el-input v-model="f" size="small"> </el-input>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="6">
+                            <el-form-item label="结算状态">
+                                <el-select v-model="value" placeholder="请选择" size="small" style="width: 100%">
+                                    <el-option
+                                        v-for="item in options"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value"
+                                    >
+                                    </el-option>
+                                </el-select>
+                            </el-form-item>
+                        </el-col>
+
+                        <el-col :span="6">
+                            <el-form-item label="有效性">
+                                <el-radio v-model="radio5" label="1">有效</el-radio>
+                                <el-radio v-model="radio5" label="2">无效</el-radio>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    <el-form-item style="text-align: center; margin-right: 90px;">
+                        <el-button type="primary" @click="onSubmit" size="small" style="width: 80px">查询</el-button>
+                        <el-button size="small" style="width: 80px">重置</el-button>
+                    </el-form-item>
+                </el-form>
+            </div>
+            <div class="small-tile">
+                <span class="tit">项目列表</span>
+                <el-button
+                    type="primary"
+                    size="mini"
+                    icon="el-icon-plus"
+                    style="margin-left: 20px;"
+                    @click="dialogVisible = true"
+                    >新增</el-button
+                >
+                <el-button type="primary" size="mini" style="margin-left: 20px;">导出</el-button>
+            </div>
+
+            <el-table :data="tableData" border stripe style="width: 100%; margin-top: 10px;">
+                <el-table-column type="selection" width="50" align="center"> </el-table-column>
+                <el-table-column type="index" label="序号" width="50" align="center"> </el-table-column>
+                <el-table-column prop="xmbh" label="项目编号"> </el-table-column>
+                <el-table-column prop="xmmc" label="项目名称"> </el-table-column>
+                <el-table-column prop="bz" label="备注">无 </el-table-column>
+                <el-table-column prop="jszt" label="结算状态">待结算 </el-table-column>
+                <el-table-column prop="yxx" label="有效性">有效</el-table-column>
+
+                <el-table-column prop="zhbjr" label="最后编辑人"> 王五</el-table-column>
+                <el-table-column prop="zhbjsj" label="最后编辑时间" width="170">2020-05-15 10:10:02 </el-table-column>
+                <el-table-column prop="caozuo" label="操作">
+                    <el-button type="text" icon="el-icon-edit-outline" size="small" @click="dialogVisible = true"
+                        >编辑</el-button
+                    >
+                </el-table-column>
+            </el-table>
+
+            <div class="block" style="padding: 10px 0;">
+                <el-pagination
+                    @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange"
+                    :current-page.sync="currentPage1"
+                    :page-size="100"
+                    layout="total, prev, pager, next"
+                    :total="1000"
+                >
+                </el-pagination>
+            </div>
+
+            <el-dialog title="新增/编辑" :visible.sync="dialogVisible" width="500" :before-close="handleClose">
+                <div class="input-content">
+                    <el-form ref="form" :model="form" label-width="90px">
+                        <el-row :gutter="10">
+                            <el-col :span="12">
+                                <el-form-item label="项目编号">
+                                    <el-input v-model="xmbh" size="small"> </el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="项目名称">
+                                    <el-input v-model="f" size="small"> </el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="结算状态">
+                                    <el-select v-model="value" placeholder="请选择" size="small" style="width: 100%">
+                                        <el-option
+                                            v-for="item in options"
+                                            :key="item.value"
+                                            :label="item.label"
+                                            :value="item.value"
+                                        >
+                                        </el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+
+                            <el-col :span="12">
+                                <el-form-item label="有效性">
+                                    <el-radio v-model="radio5" label="1">有效</el-radio>
+                                    <el-radio v-model="radio5" label="2">无效</el-radio>
+                                </el-form-item>
+                            </el-col>
+
+                            <el-col :span="24">
+                                <el-form-item label="备注">
+                                    <el-input
+                                        v-model="input2"
+                                        type="textarea"
+                                        :autosize="{ minRows: 3, maxRows: 10 }"
+                                        placeholder="请输入备注"
+                                        size="small"
+                                    >
+                                    </el-input>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                    </el-form>
+                </div>
+
+                <span slot="footer" class="dialog-footer">
+                    <el-button @click="dialogVisible = false">取 消</el-button>
+                    <el-button type="primary" @click="dialogVisible = false">提 交</el-button>
+                </span>
+            </el-dialog>
+        </div>
+    </div>
+</template>
+
+<script>
+export default {
+    data() {
+        return {
+            radio: '1',
+            radio1: '1',
+            radio2: '1',
+            radio3: '1',
+            radio4: '1',
+            radio5: '1',
+            dialogVisible: false,
+            activeName: 'first',
+            xmbh: ' ',
+
+            form: {
+                name: '',
+                region: '',
+                date1: '',
+                date2: '',
+                delivery: false,
+                type: [],
+                resource: '',
+                desc: ''
+            },
+
+            options: [
+                {
+                    value: '选项1',
+                    label: '未结算'
+                },
+                {
+                    value: '选项2',
+                    label: '已结算'
+                }
+            ],
+            value: '',
+
+            tableData: [
+                {
+                    xuhao: '1',
+                    xmbh: '010101',
+                    xmmc: 'NXY-2020'
+                },
+                {
+                    xuhao: '2',
+                    xmbh: '010102',
+                    xmmc: 'LG0202'
+                },
+                {
+                    xuhao: '3',
+                    xmbh: '010103',
+                    xmmc: 'AI YEI'
+                },
+                {
+                    xuhao: '4',
+                    xmbh: '010104',
+                    xmmc: '项目A'
+                },
+                {
+                    xuhao: '5',
+                    xmbh: '010105',
+                    xmmc: '项目B'
+                },
+                {
+                    xuhao: '6',
+                    xmbh: '010106',
+                    xmmc: '项目C'
+                },
+                {
+                    xuhao: '7',
+                    xmbh: '010107',
+                    xmmc: '项目D'
+                }
+            ],
+            tableData2: [
+                {
+                    xuhao: '1'
+                },
+                {
+                    xuhao: '2'
+                }
+            ]
+        }
+    },
+    methods: {
+        onSubmit() {
+            console.log('submit!')
+        }
+    }
+}
+</script>
